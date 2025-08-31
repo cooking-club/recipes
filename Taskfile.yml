@@ -1,0 +1,10 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - CGO_ENABLED=0 go build -o app .
+      - docker build . -t recipes
+  run:
+    cmds:
+      - docker run --name recipes -p 8080:8080 recipes
