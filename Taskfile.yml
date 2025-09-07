@@ -8,3 +8,6 @@ tasks:
   run:
     cmds:
       - docker run --name recipes -p 8080:8080 recipes
+  dev:
+    cmds:
+      - go run .
