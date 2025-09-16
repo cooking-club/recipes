@@ -1,46 +1,29 @@
 package schedule
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
-	"os"
+	"context"
+	"log"
+
+	"github.com/cooking-club/recipes/internal/db"
 )
 
-type Record struct {
-	Timestamp string `json:"timestamp"`
-	Subject   string `json:"subject"`
-	Professor string `json:"professor"`
-	Room      string `json:"room"`
-	Kind      string `json:"kind"`
-}
+func GetSchedule(gid int, pos int, limit int) ([]db.Record, error) {
+	ctx := context.TODO()
 
-type Schedule = map[string]map[string]map[string]map[string]map[string][][]*Record
-
-// expects subgroup as "х" or "хх" (1093)
-func GetSchedule(faculty, year, group, subgroup, week string, is_perp bool) (error, [][]*Record) {
-	path := "./assets/rebuilt.json"
-	if !is_perp {
-		path = "./assets/lectures-rebuilt.json"
-	}
-
-	jsonFile, err := os.Open(path)
+	var records []db.Record
+	err := db.Select(&records).
+		Relation("Professor").
+		Relation("Room").
+		Join("JOIN group_records AS gr ON gr.record_id = record.id").
+		Where("gr.group_id = ?", gid).
+		Where("record.position >= ?", pos).
+		Order("record.position ASC").
+		Limit(limit).
+		Scan(ctx)
 	if err != nil {
-		fmt.Println(err)
-		return err, nil
-	}
-	defer jsonFile.Close()
-
-	// Read file contents
-	byteValue, _ := io.ReadAll(jsonFile)
-
-	// Unmarshal JSON into struct
-	var data Schedule
-	err = json.Unmarshal(byteValue, &data)
-	if err != nil {
-		fmt.Println(err)
-		return err, nil
+		log.Println(err)
+		return nil, err
 	}
 
-	return nil, data[faculty][year][group][subgroup][week]
+	return records, nil
 }

@@ -42,6 +42,8 @@ func Init() {
 			panic(err)
 		}
 	}
+
+	db.RegisterModel((*GroupRecord)(nil))
 }
 
 func Close() error {
