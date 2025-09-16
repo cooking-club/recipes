@@ -12,14 +12,13 @@ import (
 
 var db *bun.DB
 
-func InitDB() {
+func Init() {
 	ctx := context.Background()
 
 	sqldb, err := sql.Open("mysql", "root:example@tcp(localhost:3306)/recipes?parseTime=true&charset=utf8mb4")
 	if err != nil {
 		panic(err)
 	}
-	defer sqldb.Close()
 
 	// create db instance
 	db = bun.NewDB(sqldb, mysqldialect.New())
@@ -43,4 +42,8 @@ func InitDB() {
 			panic(err)
 		}
 	}
+}
+
+func Close() error {
+	return db.Close()
 }
