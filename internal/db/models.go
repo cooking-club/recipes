@@ -26,8 +26,8 @@ type Professor struct {
 
 	ID           uint16     `bun:",pk,autoincrement"`
 	FirstName    string     `bun:"type:varchar(63)"`
-	MiddleName   string     `bun:"type:varchar(63)"`
-	LastName     string     `bun:"type:varchar(63)"`
+	Patronymic   string     `bun:"type:varchar(63)"`
+	Surname      string     `bun:"type:varchar(63)"`
 	DepartmentID uint8      `bun:",notnull"`
 	Department   Department `bun:"rel:belongs-to,join:department_id=id,notnull"`
 }
