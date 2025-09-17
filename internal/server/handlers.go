@@ -38,7 +38,7 @@ func getCoursesHandler(c echo.Context) error {
 	var p, l = 0, 0
 	if week%2 == 0 {
 		p = 7 * 6
-		l = 0
+		l = 7 * 6 * 2
 	} else {
 		p = 0
 		l = 7 * 6
