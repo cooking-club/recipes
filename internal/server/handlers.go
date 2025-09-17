@@ -1,37 +1,53 @@
 package server
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/cooking-club/recipes/internal/schedule"
+	"github.com/labstack/echo/v4"
 )
 
-type Day struct {
-	Date    string            `json:"date"`
-	Records []schedule.Record `json:"records"`
+type Error struct {
+	Code int `json:"code"`
+	Message string `json:"message"`
 }
 
 func getCoursesHandler(c echo.Context) error {
-	f := c.QueryParam("f")
-	y := c.QueryParam("y")
 	g := c.QueryParam("g")
-	s := c.QueryParam("s")
-	w := c.QueryParam("w")
+	d := c.QueryParam("d")
 
-	perp := true
-	n, _ := strconv.Atoi(w)
-	week := "0"
-
-	if n%4 == 0 || n%4 == 2 {
-		week = "1"
+	if g == "" || d == "" {
+		return c.JSON(http.StatusBadRequest, Error{1, "no params"})
+	}
+	
+	group, err := strconv.Atoi(g) // group id
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Error{1, "bad g"})
 	}
 
-	if n < 2 {
-		perp = false
+	date, err := strconv.ParseInt(d, 10, 64) // unix seconds
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Error{1, "bad d"})
 	}
 
-	_, data := schedule.GetSchedule(f, y, g, s, week, perp)
+	start, _ := time.Parse(time.RFC3339, "2025-09-01T00:00:00Z")
+	week := time.UnixMilli(date).Sub(start) / (time.Hour * 24 * 7)
+
+	var p, l = 0, 0
+	if week%2 == 0 {
+		p = 7 * 6
+		l = 0
+	} else {
+		p = 0
+		l = 7 * 6
+	}
+
+	data, err := schedule.GetSchedule(group, p, l)
+	if err != nil {
+		return err
+	}
+
 	return c.JSON(http.StatusOK, data)
 }
