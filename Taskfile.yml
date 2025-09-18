@@ -11,3 +11,6 @@ tasks:
   dev:
     cmds:
       - go run .
+  migrate:
+    cmds:
+      - go run ./cmd/migrate
