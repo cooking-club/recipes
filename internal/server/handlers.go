@@ -22,7 +22,7 @@ func getCoursesHandler(c echo.Context) error {
 	if g == "" || d == "" {
 		return c.JSON(http.StatusBadRequest, Error{1, "no params"})
 	}
-	
+
 	group, err := strconv.Atoi(g) // group id
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Error{1, "bad g"})
@@ -34,7 +34,7 @@ func getCoursesHandler(c echo.Context) error {
 	}
 
 	start, _ := time.Parse(time.RFC3339, "2025-09-01T00:00:00Z")
-	week := time.UnixMilli(date).Sub(start) / (time.Hour * 24 * 7)
+	week := time.Unix(date, 0).Sub(start) / (time.Hour * 24 * 7)
 
 	var p, l = 0, 0
 	if week%2 == 0 {
