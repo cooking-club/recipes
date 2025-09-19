@@ -5,10 +5,10 @@ import "github.com/uptrace/bun"
 type Department struct {
 	bun.BaseModel `bun:"table:departments"`
 
-	ID        uint8  `bun:",pk,autoincrement" json:"department"`
-	ShortName string `bun:"type:varchar(15)" json:"shortName"`
-	FullName  string `json:"fullName"`
-	Faculty   *string `bun:"type:enum('ИВТФ','ИФФ','ЭМФ')" json:"faculty"` // todo: replace string with go native enum
+	ID        uint8   `bun:",pk,autoincrement" json:"id"`
+	ShortName string  `bun:"type:varchar(15)" json:"shortName"`
+	FullName  string  `json:"fullName"`
+	Faculty   *string `bun:"type:enum('ИВТФ','ИФФ','ЭМФ', 'ФЭУ')" json:"faculty"` // todo: replace string with go native enum
 }
 
 type Room struct {
