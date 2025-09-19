@@ -22,4 +22,5 @@ func setupRoutes(e *echo.Echo) {
 	v1 := e.Group("/v1")
 
 	v1.GET("/courses/", getCoursesHandler)
+	v1.GET("/groups/", getGroupsHandler)
 }

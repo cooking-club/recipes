@@ -5,12 +5,13 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cooking-club/recipes/internal/groups"
 	"github.com/cooking-club/recipes/internal/schedule"
 	"github.com/labstack/echo/v4"
 )
 
 type Error struct {
-	Code int `json:"code"`
+	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
 
@@ -47,6 +48,15 @@ func getCoursesHandler(c echo.Context) error {
 	data, err := schedule.GetSchedule(group, p, l)
 	if err != nil {
 		return err
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func getGroupsHandler(c echo.Context) error {
+	data, err := groups.GetGroups()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, Error{1, "server is mid"})
 	}
 
 	return c.JSON(http.StatusOK, data)
